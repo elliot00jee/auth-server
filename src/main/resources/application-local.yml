@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: elliot-user
+    version: 0.0.1
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chatbot
+      username: chatbot
+      password: chatbot
+  redis:
+    host: localhost
+    port: 6379
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: client-id
+            client-secret: client-secret
+            client-name: client-name
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          keycloak:
+            issuer-uri: keycloak-url/auth/realms/SpringBootKeycloak
+
+logging.level:
+  root: INFO
+  org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+  org.springframework.security: DEBUG
+
+server:
+  port: ${PORT:8082}
