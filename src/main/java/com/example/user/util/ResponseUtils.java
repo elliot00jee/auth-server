@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.*;
+
 public class ResponseUtils {
     @Getter
     @Setter
@@ -32,6 +34,13 @@ public class ResponseUtils {
 
     public static ResponseEntity<?> success() {
         return success(null);
+    }
+
+    public static ResponseEntity<?> success(String key, String value) {
+        Map<String, String> response = new HashMap<>();
+        response.put(key, value);
+
+        return success(response);
     }
 
     /**

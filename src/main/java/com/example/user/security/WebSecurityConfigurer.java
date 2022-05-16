@@ -2,11 +2,11 @@ package com.example.user.security;
 
 import com.example.user.service.TokenService;
 import com.example.user.service.UserProfilesService;
-import com.example.user.service.UserAuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,7 +24,7 @@ import javax.servlet.Filter;
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private final UserAuthService userAuthService;
+    private final UserDetailServiceImpl userDetailServiceImpl;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final VerifyTokenFilter tokenVerifyFilter;
@@ -67,9 +67,13 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userAuthService)
+        auth.userDetailsService(userDetailServiceImpl)
                 .passwordEncoder(passwordEncoder);
     }
 
-
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

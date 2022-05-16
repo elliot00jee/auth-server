@@ -1,26 +1,31 @@
 package com.example.user.service;
 
+import com.example.user.entity.Tokens;
 import com.example.user.entity.UserAuth;
 import com.example.user.entity.UserProfiles;
+import com.example.user.exception.GeneralAuthenticationException;
 import com.example.user.exception.GeneralBusinessException;
 import com.example.user.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserAuthService implements UserDetailsService {
+public class UserAuthService {
     private final UserAuthRepository userAuthRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+
+    private final TokenService tokenService;
+    private final UserProfilesService userProfilesService;
 
     public void createUser(UserAuth userAuth) {
         if(userAuthRepository.findByUserId(userAuth.getUserId()).isPresent()) {
@@ -31,21 +36,25 @@ public class UserAuthService implements UserDetailsService {
         userAuthRepository.save(userAuth);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        UserAuth userAuth = userAuthRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(userId));
+    public Tokens signin(UserAuth userAuth) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                userAuth.getUserId(), userAuth.getPassword());
 
-        return new User(
-                userAuth.getUserId(),
-                userAuth.getPassword(),
-                true,
-                true,
-                true,
-                true,
-                // Collection<? extends GrantedAuthority> authorities
-                new ArrayList<>()
-        );
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(token);
+        } catch (AuthenticationException e) {
+            throw new GeneralAuthenticationException("아이디 또는 패스워드가 유효하지 않습니다.");
+        }
+
+        if(!userProfilesService.isRegisteredUser(userAuth.getUserId())) {
+            throw new GeneralAuthenticationException("가입되지 않은 사용자 입니다.");
+        }
+
+        UserProfiles userProfiles = UserProfiles.builder()
+                .userId(((User)authentication.getPrincipal()).getUsername())
+                .build();
+
+        return tokenService.generateTokens(userProfiles, false);
     }
-
 }
