@@ -15,17 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.example.user.util.ResponseUtils.addRefreshTokenCookie;
+import static com.example.user.util.ResponseUtils.success;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/keycloak")
 public class KeycloakUserController {
     private final UserProfilesService userProfilesService;
     private final TokenService tokenService;
-
-    @GetMapping
-    public String authTest() {
-        return "hello";
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto, HttpServletResponse response) {
@@ -44,10 +42,7 @@ public class KeycloakUserController {
         AuthDto authDto = new AuthDto();
         authDto.setAccesstoken(tokens.getAccessToken());
 
-        Cookie cookie = new Cookie("refresh_token", tokens.getRefreshToken());
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
-        return ResponseUtils.success(authDto);
+        addRefreshTokenCookie(tokens.getRefreshToken());
+        return success(authDto);
     }
 }

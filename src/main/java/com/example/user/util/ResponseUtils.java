@@ -6,7 +6,11 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 public class ResponseUtils {
@@ -53,4 +57,13 @@ public class ResponseUtils {
                 errorStatus);
     }
 
+    public static void addRefreshTokenCookie(String refreshToken) {
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true);
+        getHttpServletResponse().addCookie(cookie);
+    }
+
+    private static HttpServletResponse getHttpServletResponse() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+    }
 }

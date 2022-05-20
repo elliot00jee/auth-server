@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.example.user.util.ResponseUtils.addRefreshTokenCookie;
+import static com.example.user.util.ResponseUtils.success;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -28,10 +31,7 @@ public class TokenController {
         AuthDto authDto = new AuthDto();
         authDto.setAccesstoken(tokens.getAccessToken());
 
-        Cookie cookie = new Cookie("refresh_token", tokens.getRefreshToken());
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
-        return ResponseUtils.success(authDto);
+        addRefreshTokenCookie(tokens.getRefreshToken());
+        return success(authDto);
     }
 }

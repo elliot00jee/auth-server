@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.example.user.util.ResponseUtils.addRefreshTokenCookie;
+import static com.example.user.util.ResponseUtils.success;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -40,14 +43,8 @@ public class RegularUserController {
                 modelMapper.map(loginDto, UserAuth.class)
         );
 
-        response.addCookie(createRefreshTokenCookie(tokens.getRefreshToken()));
-        return ResponseUtils.success("accessToken", tokens.getAccessToken());
-    }
-
-    private Cookie createRefreshTokenCookie(String refreshToken) {
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setHttpOnly(true);
-        return cookie;
+        addRefreshTokenCookie(tokens.getRefreshToken());
+        return success("accessToken", tokens.getAccessToken());
     }
 
     @PostMapping("/signup")
@@ -58,6 +55,6 @@ public class RegularUserController {
         userProfilesService.createOrUpdateUserProfiles(
                 modelMapper.map(signupDto, UserProfiles.class)
         );
-        return ResponseUtils.success();
+        return success();
     }
 }
