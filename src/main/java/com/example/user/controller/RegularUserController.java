@@ -28,10 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class UserController {
+public class RegularUserController {
     private final UserAuthService userAuthService;
     private final UserProfilesService userProfilesService;
-    private final TokenService tokenService;
 
     private final ModelMapper modelMapper;
 
@@ -60,34 +59,5 @@ public class UserController {
                 modelMapper.map(signupDto, UserProfiles.class)
         );
         return ResponseUtils.success();
-    }
-
-    @PostMapping("/signup/keycloak")
-    public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto, HttpServletResponse response) {
-        UserProfiles userProfiles = userProfilesService.getUserProfiles(signupDto.getUserId());
-
-        if(userProfiles.getRole() != null && !userProfiles.getRole().isEmpty()) {
-            throw new GeneralBusinessException("이미 등록된 사용자입니다.");
-        }
-
-        userProfiles.setRole(signupDto.getRole());
-
-        userProfilesService.createOrUpdateUserProfiles(userProfiles);
-
-        Tokens tokens = tokenService.generateTokens(userProfiles, false);
-
-        AuthDto authDto = new AuthDto();
-        authDto.setAccesstoken(tokens.getAccessToken());
-
-        Cookie cookie = new Cookie("refresh_token", tokens.getRefreshToken());
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
-        return ResponseUtils.success(authDto);
-    }
-
-    @GetMapping("/authtest")
-    public String authTest(@AuthenticationPrincipal Object object) {
-        return "authTest";
     }
 }

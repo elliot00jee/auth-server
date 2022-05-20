@@ -45,7 +45,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
             .and()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .authorizeRequests().antMatchers("/signin", "/signup/**","/login/**", "/tokens/**", "/error").permitAll()
+                .authorizeRequests().antMatchers("/signin", "/**/signup","/login/**", "/tokens/**", "/error").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .addFilter(customAuthenticationFilter())
