@@ -46,7 +46,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
 
         UserProfiles savedUserProfiles = userProfilesService.getOrNewUserProfiles(keycloakUserProfiles.getUserId());
-        
 
         savedUserProfiles.updateUserProfiles(keycloakUserProfiles);
 

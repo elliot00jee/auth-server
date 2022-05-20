@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserAuthRepository userAuthRepository;
 
     @Override
