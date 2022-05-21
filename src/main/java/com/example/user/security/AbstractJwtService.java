@@ -1,29 +1,23 @@
 package com.example.user.security;
 
-import com.example.user.exception.GeneralBusinessException;
 import com.example.user.exception.TokenException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtException;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public abstract class AbstractJwtService {
 
     public String generateToken(String jwtId, Map<String, Object> user, Date expirationTime) {
-
         try {
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                     .jwtID(jwtId)
