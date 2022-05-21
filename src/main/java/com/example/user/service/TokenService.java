@@ -17,8 +17,8 @@ public class TokenService {
     private static final Long ACCESSTOKEN_VALID_SECONDS = 30L * 60L;
     private static final Long REFRESHTOKEN_VALID_SECONDS = 24 * 60L * 60L;
 
-    private static final Long ONETIMECODE_REIDS_TIMEOUT_SECONDS = 5 * 60L;
-    private static final Long TOKENS_REIDS_TIMEOUT_SECONDS = REFRESHTOKEN_VALID_SECONDS;
+    private static final Long ONETIMECODE_REDIS_TIMEOUT_SECONDS = 5 * 60L;
+    private static final Long TOKENS_REDIS_TIMEOUT_SECONDS = REFRESHTOKEN_VALID_SECONDS;
 
     private final AbstractJwtService jwtService;
     private final RedisService redisService;
@@ -34,7 +34,7 @@ public class TokenService {
                 .isOneTimeCodeValid(needOneTimeCode)
                 .build();
 
-        updateTokenToRedis(jwtId, tokens, needOneTimeCode ? ONETIMECODE_REIDS_TIMEOUT_SECONDS : TOKENS_REIDS_TIMEOUT_SECONDS);
+        updateTokenToRedis(jwtId, tokens, needOneTimeCode ? ONETIMECODE_REDIS_TIMEOUT_SECONDS : TOKENS_REDIS_TIMEOUT_SECONDS);
 
         return tokens;
     }
@@ -81,7 +81,7 @@ public class TokenService {
 
         tokens.expireOnetimeCode();
 
-        updateTokenToRedis(code, tokens, TOKENS_REIDS_TIMEOUT_SECONDS);
+        updateTokenToRedis(code, tokens, TOKENS_REDIS_TIMEOUT_SECONDS);
 
         return tokens;
     }
