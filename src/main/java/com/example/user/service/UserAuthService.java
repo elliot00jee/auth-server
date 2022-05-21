@@ -21,11 +21,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserAuthService {
     private final UserAuthRepository userAuthRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
 
     private final TokenService tokenService;
     private final UserProfilesService userProfilesService;
+
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     public void createUser(UserAuth userAuth) {
         if(userAuthRepository.findByUserId(userAuth.getUserId()).isPresent()) {
@@ -37,6 +38,23 @@ public class UserAuthService {
     }
 
     public Tokens signin(UserAuth userAuth) {
+        if(!userProfilesService.isRegisteredUser(userAuth.getUserId())) {
+            throw new GeneralAuthenticationException("가입되지 않은 사용자 입니다.");
+        }
+
+        Authentication authResult = getAuthenticationResult(userAuth);
+
+        UserProfiles userProfiles = userProfilesService.getUserProfiles(
+                getUserIdFromAuthResult(authResult));
+
+        return tokenService.generateTokens(userProfiles, false);
+    }
+
+    private String getUserIdFromAuthResult(Authentication authentication) {
+        return ((User) authentication.getPrincipal()).getUsername();
+    }
+
+    private Authentication getAuthenticationResult(UserAuth userAuth) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 userAuth.getUserId(), userAuth.getPassword());
 
@@ -46,15 +64,6 @@ public class UserAuthService {
         } catch (AuthenticationException e) {
             throw new GeneralAuthenticationException("아이디 또는 패스워드가 유효하지 않습니다.");
         }
-
-        if(!userProfilesService.isRegisteredUser(userAuth.getUserId())) {
-            throw new GeneralAuthenticationException("가입되지 않은 사용자 입니다.");
-        }
-
-        UserProfiles userProfiles = UserProfiles.builder()
-                .userId(((User)authentication.getPrincipal()).getUsername())
-                .build();
-
-        return tokenService.generateTokens(userProfiles, false);
+        return authentication;
     }
 }
