@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class UserProfiles {
     @Id
-    private String id;
+    private String _id;
     private String userId;
     private String username;
     private String department;
