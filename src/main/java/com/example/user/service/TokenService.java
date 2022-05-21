@@ -14,10 +14,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class TokenService {
-    public static final Long ACCESSTOKEN_VALID_SECONDS = 30L * 60L;
-    public static final Long REFRESHTOKEN_VALID_SECONDS = 24 * 60L * 60L;
+    private static final Long ACCESSTOKEN_VALID_SECONDS = 30L * 60L;
+    private static final Long REFRESHTOKEN_VALID_SECONDS = 24 * 60L * 60L;
 
-    public static final Long ONETIMECODE_REIDS_TIMEOUT_SECONDS = 5 * 60L;
+    private static final Long ONETIMECODE_REIDS_TIMEOUT_SECONDS = 5 * 60L;
     private static final Long TOKENS_REIDS_TIMEOUT_SECONDS = REFRESHTOKEN_VALID_SECONDS;
 
     private final AbstractJwtService jwtService;
