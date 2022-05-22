@@ -7,13 +7,12 @@ import com.example.user.entity.UserProfiles;
 import com.example.user.exception.GeneralBusinessException;
 import com.example.user.service.TokenService;
 import com.example.user.service.UserProfilesService;
-import com.example.user.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.user.util.ResponseUtils.addRefreshTokenCookie;
 import static com.example.user.util.ResponseUtils.success;
@@ -26,7 +25,7 @@ public class KeycloakUserController {
     private final TokenService tokenService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto, HttpServletResponse response) {
+    public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto) {
         UserProfiles userProfiles = userProfilesService.getUserProfiles(signupDto.getUserId());
 
         if(userProfiles.getRole() != null && !userProfiles.getRole().isEmpty()) {
