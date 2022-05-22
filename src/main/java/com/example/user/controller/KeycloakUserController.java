@@ -26,7 +26,8 @@ public class KeycloakUserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto) {
-        UserProfiles userProfiles = userProfilesService.getUserProfiles(signupDto.getUserId());
+        UserProfiles userProfiles = userProfilesService.getUserProfilesOptional(signupDto.getUserId())
+                .orElseThrow(() -> new GeneralBusinessException("keycloak으로 로그인한 사용자 정보가 존재하지 않습니다."));
 
         if(userProfiles.getRole() != null && !userProfiles.getRole().isEmpty()) {
             throw new GeneralBusinessException("이미 등록된 사용자입니다.");

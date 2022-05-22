@@ -38,14 +38,11 @@ public class UserAuthService {
     }
 
     public Tokens signin(UserAuth userAuth) {
-        if(!userProfilesService.isRegisteredUser(userAuth.getUserId())) {
-            throw new GeneralAuthenticationException("가입되지 않은 사용자 입니다.");
-        }
-
         Authentication authResult = getAuthenticationResult(userAuth);
 
-        UserProfiles userProfiles = userProfilesService.getUserProfiles(
-                getUserIdFromAuthResult(authResult));
+        UserProfiles userProfiles = userProfilesService
+                .getUserProfilesOptional(getUserIdFromAuthResult(authResult))
+                    .orElseThrow(() -> new GeneralAuthenticationException("사용자 프로필 정보가 존재하지 않습니다."));
 
         return tokenService.generateTokens(userProfiles, false);
     }

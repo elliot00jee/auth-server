@@ -16,21 +16,16 @@ public class UserProfilesService {
 
     private final UserProfilesRepository userProfilesRepository;
 
+    public void createOrUpdateUserProfiles(UserProfiles userProfiles) {
+        userProfilesRepository.save(userProfiles);
+    }
+
     public UserProfiles getOrNewUserProfiles(String userId) {
         return userProfilesRepository.findByUserId(userId)
                 .orElseGet(UserProfiles::new);
     }
 
-    public boolean isRegisteredUser(String userId) {
-        return userProfilesRepository.findByUserId(userId).isPresent();
-    }
-
-    public void createOrUpdateUserProfiles(UserProfiles userProfiles) {
-        userProfilesRepository.save(userProfiles);
-    }
-
-    public UserProfiles getUserProfiles(String userId) {
-        return userProfilesRepository.findByUserId(userId)
-                .orElseThrow(() -> new GeneralBusinessException("keycloak 사용자 정보가 존재하지 않습니다."));
+    public Optional<UserProfiles> getUserProfilesOptional(String userId) {
+        return userProfilesRepository.findByUserId(userId);
     }
 }
