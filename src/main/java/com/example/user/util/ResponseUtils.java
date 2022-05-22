@@ -58,7 +58,7 @@ public class ResponseUtils {
     }
 
     public static void addRefreshTokenCookie(String refreshToken) {
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        Cookie cookie = new Cookie("refreshtoken", refreshToken);
         cookie.setHttpOnly(true);
         getHttpServletResponse().addCookie(cookie);
     }
