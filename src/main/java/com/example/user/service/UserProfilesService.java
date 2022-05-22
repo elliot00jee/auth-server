@@ -19,12 +19,7 @@ public class UserProfilesService {
     public void createOrUpdateUserProfiles(UserProfiles userProfiles) {
         userProfilesRepository.save(userProfiles);
     }
-
-    public UserProfiles getOrNewUserProfiles(String userId) {
-        return userProfilesRepository.findByUserId(userId)
-                .orElseGet(UserProfiles::new);
-    }
-
+    
     public Optional<UserProfiles> getUserProfilesOptional(String userId) {
         return userProfilesRepository.findByUserId(userId);
     }
