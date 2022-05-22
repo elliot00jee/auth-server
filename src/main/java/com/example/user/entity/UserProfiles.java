@@ -28,7 +28,7 @@ public class UserProfiles {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-    public void updateUserProfiles(UserProfiles updatedUserProfiles) {
+    public void setUserProfilesBy(UserProfiles updatedUserProfiles) {
         if(this.userId == null) {
             this.userId = updatedUserProfiles.getUserId();
         }
