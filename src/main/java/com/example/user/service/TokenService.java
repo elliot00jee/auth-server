@@ -29,6 +29,7 @@ public class TokenService {
 
         Tokens tokens = Tokens.builder()
                 .jwtId(jwtId)
+                .userId(userProfiles.getUserId())
                 .accessToken(generateAccessToken(jwtId, createUserProfilesClaim(userProfiles)))
                 .refreshToken(generateRefreshToken())
                 .isOneTimeCodeValid(needOneTimeCode)
@@ -60,7 +61,7 @@ public class TokenService {
     }
 
     public String generateRefreshToken() {
-        return jwtService.generateToken(null,null, getExpirationTime(ACCESSTOKEN_VALID_SECONDS));
+        return jwtService.generateToken(null,null, getExpirationTime(REFRESHTOKEN_VALID_SECONDS));
     }
 
     public Tokens getTokensByOneTimeCode(String code) {
