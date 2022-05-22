@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 public class RedisService {
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void setRedisTimeout(String jwtId, long timeoutSeconds) {
         redisTemplate.expire(jwtId, timeoutSeconds, TimeUnit.SECONDS);
