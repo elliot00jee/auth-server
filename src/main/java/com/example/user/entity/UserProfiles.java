@@ -1,5 +1,6 @@
 package com.example.user.entity;
 
+import com.example.user.exception.GeneralBusinessException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,4 +38,10 @@ public class UserProfiles {
         this.department = updatedUserProfiles.department;
     }
 
+    public void setRole(String role) {
+        if(this.role != null && !this.role.isEmpty()) {
+            throw new GeneralBusinessException("role은 변경될 수 없습니다. role: " + this.role);
+        }
+        this.role = role;
+    }
 }

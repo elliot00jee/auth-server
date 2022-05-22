@@ -4,10 +4,10 @@ import com.example.user.controller.dto.AuthDto;
 import com.example.user.controller.dto.SignupDto;
 import com.example.user.entity.Tokens;
 import com.example.user.entity.UserProfiles;
-import com.example.user.exception.GeneralBusinessException;
 import com.example.user.service.TokenService;
 import com.example.user.service.UserProfilesService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,19 +23,13 @@ import static com.example.user.util.ResponseUtils.success;
 public class KeycloakUserController {
     private final UserProfilesService userProfilesService;
     private final TokenService tokenService;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/signup")
     public ResponseEntity<?> createKeycloakUser(@RequestBody SignupDto signupDto) {
-        UserProfiles userProfiles = userProfilesService.getUserProfilesOptional(signupDto.getUserId())
-                .orElseThrow(() -> new GeneralBusinessException("keycloak으로 로그인한 사용자 정보가 존재하지 않습니다."));
-
-        if(userProfiles.getRole() != null && !userProfiles.getRole().isEmpty()) {
-            throw new GeneralBusinessException("이미 등록된 사용자입니다.");
-        }
-
-        userProfiles.setRole(signupDto.getRole());
-
-        userProfilesService.createOrUpdateUserProfiles(userProfiles);
+        UserProfiles userProfiles = userProfilesService.createKeycloakUser(
+                modelMapper.map(signupDto, UserProfiles.class)
+        );
 
         Tokens tokens = tokenService.generateTokens(userProfiles, false);
 

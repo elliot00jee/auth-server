@@ -23,4 +23,19 @@ public class UserProfilesService {
     public Optional<UserProfiles> getUserProfilesOptional(String userId) {
         return userProfilesRepository.findByUserId(userId);
     }
+
+    public UserProfiles createKeycloakUser(UserProfiles userProfiles) {
+        UserProfiles savedUserProfiles = getUserProfilesOptional(userProfiles.getUserId())
+                .orElseThrow(() -> new GeneralBusinessException("keycloak으로 로그인한 사용자 정보가 존재하지 않습니다."));
+
+        try {
+            savedUserProfiles.setRole(userProfiles.getRole());
+        }catch (GeneralBusinessException e) {
+            throw new GeneralBusinessException("이미 등록된 사용자입니다.");
+        }
+
+        createOrUpdateUserProfiles(savedUserProfiles);
+
+        return savedUserProfiles;
+    }
 }
