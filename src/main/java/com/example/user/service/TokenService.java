@@ -35,7 +35,7 @@ public class TokenService {
                 .isOneTimeCodeValid(needOneTimeCode)
                 .build();
 
-        updateTokenToRedis(jwtId, tokens, needOneTimeCode ? ONETIMECODE_REDIS_TIMEOUT_SECONDS : TOKENS_REDIS_TIMEOUT_SECONDS);
+        updateTokenToRedis(tokens);
 
         return tokens;
     }
@@ -48,9 +48,10 @@ public class TokenService {
         return userProfilesClaim;
     }
 
-    private void updateTokenToRedis(String jwtId, Tokens tokens, long timeoutSeconds){
+    private void updateTokenToRedis(Tokens tokens) {
+        long timeoutSeconds = tokens.isOneTimeCodeValid() ? ONETIMECODE_REDIS_TIMEOUT_SECONDS : TOKENS_REDIS_TIMEOUT_SECONDS;
         try {
-            redisService.update(jwtId, objectMapper.writeValueAsString(tokens), timeoutSeconds);
+            redisService.update(tokens.getJwtId(), objectMapper.writeValueAsString(tokens), timeoutSeconds);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -61,7 +62,7 @@ public class TokenService {
     }
 
     public String generateRefreshToken() {
-        return jwtService.generateToken(null,null, getExpirationTime(REFRESHTOKEN_VALID_SECONDS));
+        return jwtService.generateToken(null, null, getExpirationTime(REFRESHTOKEN_VALID_SECONDS));
     }
 
     public Tokens getTokensByOneTimeCode(String code) {
@@ -82,7 +83,7 @@ public class TokenService {
 
         tokens.expireOnetimeCode();
 
-        updateTokenToRedis(code, tokens, TOKENS_REDIS_TIMEOUT_SECONDS);
+        updateTokenToRedis(tokens);
 
         return tokens;
     }
