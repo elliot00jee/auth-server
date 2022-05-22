@@ -107,7 +107,7 @@ class KeycloakUserControllerTest {
                     .andExpect(handler().handlerType(KeycloakUserController.class))
                     .andExpect(handler().methodName("createKeycloakUser"))
                     .andExpect(jsonPath("$.resultCd", is(ResponseUtils.ResultCd.BE.name())))
-                    .andExpect(jsonPath("$.resultMessage", is("keycloak 사용자 정보가 존재하지 않습니다.")));
+                    .andExpect(jsonPath("$.resultMessage", is("keycloak으로 로그인한 사용자 정보가 존재하지 않습니다.")));
         }
     }
 }
