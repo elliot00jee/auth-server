@@ -35,7 +35,7 @@ public class RegularUserController {
         );
 
         addRefreshTokenCookie(tokens.getRefreshToken());
-        return success("accessToken", tokens.getAccessToken());
+        return success("accesstoken", tokens.getAccessToken());
     }
 
     @PostMapping("/signup")
