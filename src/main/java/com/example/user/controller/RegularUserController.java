@@ -1,29 +1,20 @@
 package com.example.user.controller;
 
 
-import com.example.user.controller.dto.AuthDto;
 import com.example.user.controller.dto.LoginDto;
 import com.example.user.controller.dto.SignupDto;
 import com.example.user.entity.Tokens;
 import com.example.user.entity.UserAuth;
 import com.example.user.entity.UserProfiles;
-import com.example.user.exception.GeneralBusinessException;
-import com.example.user.service.TokenService;
 import com.example.user.service.UserAuthService;
 import com.example.user.service.UserProfilesService;
-import com.example.user.util.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 import static com.example.user.util.ResponseUtils.addRefreshTokenCookie;
 import static com.example.user.util.ResponseUtils.success;
@@ -38,7 +29,7 @@ public class RegularUserController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<?> signin(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<?> signin(@RequestBody LoginDto loginDto) {
         Tokens tokens = userAuthService.signin(
                 modelMapper.map(loginDto, UserAuth.class)
         );
