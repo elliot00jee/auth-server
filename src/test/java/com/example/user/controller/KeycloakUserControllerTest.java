@@ -37,23 +37,19 @@ class KeycloakUserControllerTest {
     @Autowired
     MockMvc mockMvc;
     static MongoTemplate mongoTemplate;
-    static boolean initCompleted = false;
 
     final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeAll
-    static void init() {
-        System.out.println("init");
+    static void setUp() {
         mongoTemplate = new MongoTemplate(
                 new SimpleMongoClientDatabaseFactory(MONGODB_CONN_STR));
         mongoTemplate.insert(UserProfiles.builder().userId(KeycloakUserControllerTest.TEST_USER_01).build());
         mongoTemplate.insert(UserProfiles.builder().userId(KeycloakUserControllerTest.TEST_USER_02).role(ROLE_ADMIN).build());
-        initCompleted = true;
     }
 
     @AfterAll
-    static void destroy() {
-        System.out.println("destroy");
+    static void tearDown() {
         mongoTemplate.remove(new Query(new Criteria("userId").is(TEST_USER_01)), COL_USER_PROFILES);
         mongoTemplate.remove(new Query(new Criteria("userId").is(TEST_USER_02)), COL_USER_PROFILES);
     }
