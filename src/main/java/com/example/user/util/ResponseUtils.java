@@ -64,6 +64,7 @@ public class ResponseUtils {
     }
 
     private static HttpServletResponse getHttpServletResponse() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
+                .getResponse();
     }
 }
