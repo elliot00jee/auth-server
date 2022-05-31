@@ -1,7 +1,7 @@
 package com.example.user.security;
 
 import com.example.user.util.ResponseUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.user.util.ResponseUtils.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,12 +29,10 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
         try {
             String message = objectMapper.writeValueAsString(
-                    new ResponseUtils.ApiResponse(ResponseUtils.ResultCd.BE, null, "인증되지 않은 요청입니다."));
+                    new ApiResponse<>(ResponseUtils.ResultCd.BE, null, "인증되지 않은 요청입니다."));
             response.getWriter().write(message);
-        } catch (JsonProcessingException je) {
+        } catch (IOException je) {
             je.printStackTrace();
-        } catch (IOException ie) {
-            ie.printStackTrace();
         }
     }
 }
