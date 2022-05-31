@@ -1,0 +1,25 @@
+@startuml
+Actor 사용자
+participant Frontend
+participant Backend
+database MongoDB
+activate 사용자
+사용자 -> Frontend : 로그인 페이지 요청
+activate Frontend
+Frontend --> 사용자 : 로그인 페이지 응답
+deactivate Frontend
+사용자 -> Frontend : 아이디/패스워드 입력 후 로그인 요청
+activate Frontend
+Frontend -> Backend : 아이디/패스워드 인증 요청\n<font color=red><b>POST /signin
+activate Backend
+Backend -> MongoDB : 사용자 인증 정보 조회
+activate MongoDB
+MongoDB --> Backend
+deactivate MongoDB
+alt Authentication success
+    Backend -> Backend : 자체 JWT 토큰 생성
+    Backend --> Frontend : 토큰 응답
+else Authentication Failure
+    Backend --> Frontend : 401 Error
+end
+@enduml

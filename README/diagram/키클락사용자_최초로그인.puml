@@ -1,0 +1,43 @@
+@startuml
+Actor 사용자
+participant Frontend
+participant Backend
+participant Keycloak
+database MongoDB
+activate 사용자
+사용자 -> Frontend : 로그인 페이지 요청
+activate Frontend
+Frontend --> 사용자 : 로그인 페이지 응답
+deactivate Frontend
+사용자 -> Frontend : 키클락 로그인 요청
+activate Frontend
+Frontend -> Backend : 키클락 인증 요청\n<font color=red><b>POST /oauth2/authorization/keycloak
+deactivate Frontend
+activate Backend
+Backend --> 사용자 : 키클락 로그인 페이지로 리다이렉트
+deactivate Backend
+사용자 -> Keycloak : 키클락 로그인
+activate Keycloak
+Keycloak --> Backend : 인증 정보 응답
+deactivate Keycloak
+activate Backend
+Backend -> MongoDB : 사용자 부가 정보 저장
+activate MongoDB
+MongoDB --> Backend
+deactivate MongoDB
+Backend --> 사용자 : 회원가입 페이지로 리다이렉트\n <font color=red><b>회원가입URL?userId=knoxportal
+deactivate Backend
+사용자 -> Frontend : 회원가입 요청
+activate Frontend
+Frontend -> Backend : 회원가입 API 호출\n<font color=red><b>POST /signup/keycloak
+
+activate Backend
+Backend -> MongoDB : 사용자 부가 정보 업데이트
+activate MongoDB
+MongoDB --> Backend
+deactivate MongoDB
+Backend -> Backend : 자체 JWT 토큰 생성
+
+Backend --> Frontend : 토큰 응답
+deactivate Backend
+@enduml
